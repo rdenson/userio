@@ -16,11 +16,9 @@ or eye-catching look elsewhere. This package is for applying simple colors to CL
 programs.
 
 ### Technical
-There are three basic components here:
+Basic components here:
 * display - output something
 * prompt - take in user input
-* interpretation - still under conceptualization
- * a furthering of "prompt" to encapsulate what I'm calling "a user request"
 
 Colors and emojis employed here are expressed in ANSI escape sequences.
 Color Palette below 👇
