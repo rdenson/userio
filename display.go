@@ -49,11 +49,21 @@ func ListElement(content string) {
   )
 }
 
-func NumberedListElement(index int, content string) {
+func ListElementFromArray(index int, content string) {
   offsetIndex := index + 1
   output(
     ColorList,
     fmt.Sprintf("%d) %s", offsetIndex, content),
+    standardPadding,
+    writeNewline,
+    os.Stdout,
+  )
+}
+
+func ListElementWithLabel(label, content string) {
+  output(
+    ColorList,
+    fmt.Sprintf("%s) %s", label, content),
     standardPadding,
     writeNewline,
     os.Stdout,
