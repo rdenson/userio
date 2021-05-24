@@ -11,8 +11,15 @@ const (
 
   // yellow
   ColorInfo = "\u001b[33m"
+
+
+  /* --- Highlighters --- */
   // yellow background with black text
   ColorHighlight = "\u001b[43m\u001b[30m"
+  // green background with black text
+  ColorGreenHighlight = "\u001b[42m\u001b[30m"
+  // red background with white text
+  ColorRedHighlight = "\u001b[41m\u001b[37m"
 
   // magenta
   ColorInstruction = "\u001b[35m"
@@ -21,6 +28,9 @@ const (
 
   // cyan
   ColorList = "\u001b[36m"
+
+  // dark grey
+  ColorMuted = "\x1b[38;5;242m"
 
   // green
   ColorStandard = "\u001b[32m"
