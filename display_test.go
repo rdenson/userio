@@ -66,7 +66,7 @@ func (suite *UserIODisplaySuite) TestOutputStructure() {
   // has specified content (string message)?
   suite.Equal(suite.genericContent, string(result[contentStart:contentEnd]))
   // content is followed by escape code for color reset?
-  suite.Equal(ColorReset, string(result[contentEnd:len(result)-1]))
+  suite.Equal(TextReset, string(result[contentEnd:len(result)-1]))
   // we specified output to write a newline, make sure it's there
   suite.Equal(byte('\n'), result[len(result)-1])
 }

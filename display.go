@@ -6,52 +6,19 @@ import (
 )
 
 const (
-  // red
-  ColorError = "\u001b[31m"
-
-  // yellow
-  ColorInfo = "\u001b[33m"
-
-
-  /* --- Highlighters --- */
-  // yellow background with black text
-  ColorHighlight = "\u001b[43m\u001b[30m"
-  // green background with black text
-  ColorGreenHighlight = "\u001b[42m\u001b[30m"
-  // red background with white text
-  ColorRedHighlight = "\u001b[41m\u001b[37m"
-
-  // magenta
-  ColorInstruction = "\u001b[35m"
-  // magenta background with white text
-  ColorInstructionHighlight = "\u001b[45m\u001b[37m"
-
-  // cyan
-  ColorList = "\u001b[36m"
-
-  // dark grey
-  ColorMuted = "\x1b[38;5;242m"
-
-  // green
-  ColorStandard = "\u001b[32m"
-
-  ColorReset = "\u001b[0m"
   EmojiWave = "\U0001F44B"
+  TextReset = "\u001b[0m"
   standardPadding = 2
   writeNewline = true
 )
 
 func Highlight(content string) string {
-  return fmt.Sprintf("%s %s %s", ColorHighlight, content, ColorReset)
-}
-
-func HighlightInstruction(content string) string {
-  return fmt.Sprintf("%s %s %s", ColorInstructionHighlight, content, ColorReset)
+  return fmt.Sprintf("%s %s %s", HighlightYellow, content, TextReset)
 }
 
 func ListElement(content string) {
   output(
-    ColorList,
+    ColorCyan,
     content,
     5,
     writeNewline,
@@ -62,7 +29,7 @@ func ListElement(content string) {
 func ListElementFromArray(index int, content string) {
   offsetIndex := index + 1
   output(
-    ColorList,
+    ColorCyan,
     fmt.Sprintf("%d) %s", offsetIndex, content),
     standardPadding,
     writeNewline,
@@ -72,7 +39,7 @@ func ListElementFromArray(index int, content string) {
 
 func ListElementWithLabel(label, content string) {
   output(
-    ColorList,
+    ColorCyan,
     fmt.Sprintf("%s) %s", label, content),
     standardPadding,
     writeNewline,
@@ -85,7 +52,7 @@ func Write(content string) {
 }
 
 func WriteError(content string) {
-  output(ColorError, content, standardPadding, writeNewline, os.Stdout)
+  output(ColorRed, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func WriteInfo(content string) {
@@ -119,8 +86,8 @@ func padWithSpace(numberOfSpaces int) string {
 
 func output(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
   lineEnder := ""
-  if strings.Contains(content, ColorReset) {
-    content = strings.ReplaceAll(content, ColorReset, ColorReset + color)
+  if strings.Contains(content, TextReset) {
+    content = strings.ReplaceAll(content, TextReset, TextReset + color)
   }
 
   if terminateLine {
@@ -133,7 +100,7 @@ func output(color, content string, numberOfLeadingSpaces int, terminateLine bool
     padWithSpace(numberOfLeadingSpaces),
     color,
     content,
-    ColorReset,
+    TextReset,
     lineEnder,
   )
 }
