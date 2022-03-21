@@ -51,6 +51,10 @@ func Write(content string) {
   output(ColorStandard, content, standardPadding, writeNewline, os.Stdout)
 }
 
+func Writef(s string, a ...interface{}) {
+  output(ColorStandard, fmt.Sprintf(s, a...), standardPadding, false, os.Stdout)
+}
+
 func WriteError(content string) {
   output(ColorRed, content, standardPadding, writeNewline, os.Stdout)
 }
