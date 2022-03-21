@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/rdenson/userio.svg?branch=master)](https://travis-ci.org/rdenson/userio)
-
 # USERIO - Colorized Command-Line Input/Output
 General Purpose I/O For Go CLI projects (in color!).
 
