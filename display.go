@@ -7,7 +7,7 @@ import (
 
 const (
   EmojiWave = "\U0001F44B"
-  TextReset = "\u001b[0m"
+  TextReset = "\x1b[0m"
   standardPadding = 2
   writeNewline = true
 )

@@ -2,20 +2,19 @@
 General Purpose I/O For Go CLI projects (in color!).
 
 ## Summary
-This submodule is meant to be a wrapper for printing messages and ingesting user
-input. The goal here is portability into any basic cli program and for providing
-some sort of standardization. Colorized for your pattern recognition pleasure,
-it's a reliable boiler plate Go import.  
-_"designed for black backgrounds"_
+This submodule is meant to be a wrapper for formatting screen output and ingesting
+user input. The goal here is easy portability into a Go CLI program and for providing
+some semblance of readability against a dark background.
 
 ### Design Philosophy
 Simplistic colors, forming brief predictable output. If you need something trendy
-or eye-catching look elsewhere. This package is for applying simple colors to CLI
-programs.
+or eye-catching look elsewhere. This package is for applying simple formatting to
+CLI programs.
 
 ### Technical
-Basic components here:
+basic components:
 * display - output something
 * prompt - take in user input
+* choice - menu style selection (_in testing_)
 
-_colors and emojis employed here are expressed in ANSI escape sequences_
+colors and emojis employed here are expressed in ANSI escape sequences
