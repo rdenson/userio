@@ -1,7 +1,5 @@
 name: test mainline
 on: push
-  branches:
-    - "master"
 
 jobs:
   builds:
