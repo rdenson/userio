@@ -14,6 +14,7 @@ type UserIODisplaySuite struct {
 }
 
 // need some setup to call output; normally we use os.Stdout but can't do that here
+// as we might clutter the test output
 func (uiods *UserIODisplaySuite) callOutput(content string, padding int, hasNewline bool) []byte {
   // generate some "output" to a temporary file
   tempFile, _ := ioutil.TempFile("", "")

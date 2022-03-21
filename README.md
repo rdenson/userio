@@ -20,12 +20,4 @@ Basic components here:
 * display - output something
 * prompt - take in user input
 
-Colors and emojis employed here are expressed in ANSI escape sequences.
-Color Palette below 👇
-
-| ANSI Sequence | Color | Usage |
-| --- | --- | --- |
-| `\u001b[32m` | <span style="color:rgb(37,188,36)"> green </span> | default or standard |
-| `\u001b[33m` | <span style="color:rgb(173,173,39)"> yellow </span> | information |
-| `\u001b[32m` | <span style="color:rgb(51,187,200)"> cyan </span> | list element |
-| `\u001b[35m` | <span style="color:rgb(211,56,211)"> magenta </span> | instruction |
+_colors and emojis employed here are expressed in ANSI escape sequences_
