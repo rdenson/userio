@@ -49,7 +49,7 @@ func promptLine(content string, in, out *os.File) (string, error) {
   const Newline = '\n'
   var inputReader *bufio.Reader = bufio.NewReader(in)
 
-  output(ColorStandard, content + " ", standardPadding, !writeNewline, out)
+  outputNoTimestamp(ColorStandard, content + " ", standardPadding, !writeNewline, out)
   inputRead, inputReadErr := inputReader.ReadString(Newline)
   if inputReadErr != nil {
     return "", inputReadErr
@@ -60,7 +60,7 @@ func promptLine(content string, in, out *os.File) (string, error) {
 
 func promptToken(content string, in, out *os.File) string {
   var userInput string
-  output(ColorStandard, content + " ", standardPadding, !writeNewline, out)
+  outputNoTimestamp(ColorStandard, content + " ", standardPadding, !writeNewline, out)
   fmt.Fscanln(in, &userInput)
 
   return userInput

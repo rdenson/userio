@@ -3,6 +3,7 @@ import (
   "fmt"
   "os"
   "strings"
+  "time"
 )
 
 const (
@@ -17,7 +18,7 @@ func Highlight(content string) string {
 }
 
 func ListElement(content string) {
-  output(
+  outputNoTimestamp(
     ColorCyan,
     content,
     5,
@@ -28,7 +29,7 @@ func ListElement(content string) {
 
 func ListElementFromArray(index int, content string) {
   offsetIndex := index + 1
-  output(
+  outputNoTimestamp(
     ColorCyan,
     fmt.Sprintf("%d) %s", offsetIndex, content),
     standardPadding,
@@ -38,7 +39,7 @@ func ListElementFromArray(index int, content string) {
 }
 
 func ListElementWithLabel(label, content string) {
-  output(
+  outputNoTimestamp(
     ColorCyan,
     fmt.Sprintf("%s) %s", label, content),
     standardPadding,
@@ -48,23 +49,23 @@ func ListElementWithLabel(label, content string) {
 }
 
 func Write(content string) {
-  output(ColorStandard, content, standardPadding, writeNewline, os.Stdout)
+  outputWithTimestamp(ColorStandard, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func Writef(s string, a ...interface{}) {
-  output(ColorStandard, fmt.Sprintf(s, a...), standardPadding, false, os.Stdout)
+  outputWithTimestamp(ColorStandard, fmt.Sprintf(s, a...), standardPadding, false, os.Stdout)
 }
 
 func WriteError(content string) {
-  output(ColorRed, content, standardPadding, writeNewline, os.Stdout)
+  outputWithTimestamp(ColorRed, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func WriteInfo(content string) {
-  output(ColorInfo, content, standardPadding, writeNewline, os.Stdout)
+  outputWithTimestamp(ColorInfo, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func WriteInstruction(content string) {
-  output(ColorInstruction, content, 4, writeNewline, os.Stdout)
+  outputNoTimestamp(ColorInstruction, content, 4, writeNewline, os.Stdout)
 }
 
 func WriteResultListHeader(listCount int) {
@@ -88,7 +89,7 @@ func padWithSpace(numberOfSpaces int) string {
   return stringToFill.String()
 }
 
-func output(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
+func output(color, content string, numberOfLeadingSpaces int, includeTimestamp, terminateLine bool, out *os.File) {
   lineEnder := ""
   if strings.Contains(content, TextReset) {
     content = strings.ReplaceAll(content, TextReset, TextReset + color)
@@ -98,13 +99,50 @@ func output(color, content string, numberOfLeadingSpaces int, terminateLine bool
     lineEnder = "\n"
   }
 
-  fmt.Fprintf(
-    out,
-    "%s%s%s%s%s",
-    padWithSpace(numberOfLeadingSpaces),
+  if includeTimestamp {
+    fmt.Fprintf(
+      out,
+      "%s[%s]%s %s%s%s%s%s",
+      ColorStandard,
+      time.Now().Format("15:04"),
+      TextReset,
+      padWithSpace(numberOfLeadingSpaces),
+      color,
+      content,
+      TextReset,
+      lineEnder,
+    )
+  } else {
+    fmt.Fprintf(
+      out,
+      "%s%s%s%s%s",
+      padWithSpace(numberOfLeadingSpaces),
+      color,
+      content,
+      TextReset,
+      lineEnder,
+    )
+  }
+}
+
+func outputNoTimestamp(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
+  output(
     color,
     content,
-    TextReset,
-    lineEnder,
+    numberOfLeadingSpaces,
+    false,
+    terminateLine,
+    out,
+  )
+}
+
+func outputWithTimestamp(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
+  output(
+    color,
+    content,
+    numberOfLeadingSpaces,
+    true,
+    terminateLine,
+    out,
   )
 }

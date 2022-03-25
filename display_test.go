@@ -15,10 +15,10 @@ type UserIODisplaySuite struct {
 
 // need some setup to call output; normally we use os.Stdout but can't do that here
 // as we might clutter the test output
-func (uiods *UserIODisplaySuite) callOutput(content string, padding int, hasNewline bool) []byte {
+func (uiods *UserIODisplaySuite) callOutput(content string, padding int, hasTimestamp, hasNewline bool) []byte {
   // generate some "output" to a temporary file
   tempFile, _ := ioutil.TempFile("", "")
-  output(ColorStandard, content, padding, hasNewline, tempFile)
+  output(ColorStandard, content, padding, hasTimestamp, hasNewline, tempFile)
   tempFile.Close()
 
   // open generated file
@@ -54,7 +54,8 @@ func (suite *UserIODisplaySuite) TestPadWithSpace() {
 }
 
 func (suite *UserIODisplaySuite) TestOutputStructure() {
-  result := suite.callOutput(suite.genericContent, standardPadding, writeNewline)
+  showTimestamp := false
+  result := suite.callOutput(suite.genericContent, standardPadding, showTimestamp, writeNewline)
   contentStart := strings.Index(string(result), suite.genericContent)
   contentEnd := contentStart+len(suite.genericContent)
 
@@ -73,15 +74,17 @@ func (suite *UserIODisplaySuite) TestOutputStructure() {
 }
 
 func (suite *UserIODisplaySuite) TestOutputWithoutNewline() {
-  result := suite.callOutput(suite.genericContent, standardPadding, !writeNewline)
+  showTimestamp := false
+  result := suite.callOutput(suite.genericContent, standardPadding, showTimestamp, !writeNewline)
 
   suite.NotEqual(byte('\n'), result[len(result)-1])
 }
 
 func (suite *UserIODisplaySuite) TestOutputWithVariousPaddingAmounts() {
   bigPadding := 5
-  result1 := suite.callOutput(suite.genericContent, bigPadding, writeNewline)
-  result2 := string(suite.callOutput(suite.genericContent, 0, writeNewline))
+  showTimestamp := false
+  result1 := suite.callOutput(suite.genericContent, bigPadding, showTimestamp, writeNewline)
+  result2 := string(suite.callOutput(suite.genericContent, 0, showTimestamp, writeNewline))
 
   suite.Equal(padWithSpace(bigPadding), string(result1[:bigPadding]))
   suite.Equal(false, strings.Contains(result2, " "))
