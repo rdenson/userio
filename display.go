@@ -13,6 +13,8 @@ const (
   writeNewline = true
 )
 
+var EnableTimestamp bool = false
+
 func Highlight(content string) string {
   return fmt.Sprintf("%s %s %s", HighlightYellow, content, TextReset)
 }
@@ -49,19 +51,23 @@ func ListElementWithLabel(label, content string) {
 }
 
 func Write(content string) {
-  outputWithTimestamp(ColorStandard, content, standardPadding, writeNewline, os.Stdout)
+  canOutputTimestamp(ColorStandard, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func Writef(s string, a ...interface{}) {
-  outputWithTimestamp(ColorStandard, fmt.Sprintf(s, a...), standardPadding, false, os.Stdout)
+  canOutputTimestamp(ColorStandard, fmt.Sprintf(s, a...), standardPadding, false, os.Stdout)
 }
 
 func WriteError(content string) {
-  outputWithTimestamp(ColorRed, content, standardPadding, writeNewline, os.Stdout)
+  canOutputTimestamp(ColorRed, content, standardPadding, writeNewline, os.Stdout)
 }
 
 func WriteInfo(content string) {
-  outputWithTimestamp(ColorInfo, content, standardPadding, writeNewline, os.Stdout)
+  canOutputTimestamp(ColorInfo, content, standardPadding, writeNewline, os.Stdout)
+}
+
+func WriteInfof(s string, a ...interface{}) {
+  canOutputTimestamp(ColorInfo, fmt.Sprintf(s, a...), standardPadding, writeNewline, os.Stdout)
 }
 
 func WriteInstruction(content string) {
@@ -77,6 +83,17 @@ func WriteResultListHeader(listCount int) {
   default:
     WriteInfo(fmt.Sprintf("found %d results:", listCount))
   }
+}
+
+func canOutputTimestamp(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
+  output(
+    color,
+    content,
+    numberOfLeadingSpaces,
+    EnableTimestamp,
+    terminateLine,
+    out,
+  )
 }
 
 func padWithSpace(numberOfSpaces int) string {
@@ -131,17 +148,6 @@ func outputNoTimestamp(color, content string, numberOfLeadingSpaces int, termina
     content,
     numberOfLeadingSpaces,
     false,
-    terminateLine,
-    out,
-  )
-}
-
-func outputWithTimestamp(color, content string, numberOfLeadingSpaces int, terminateLine bool, out *os.File) {
-  output(
-    color,
-    content,
-    numberOfLeadingSpaces,
-    true,
     terminateLine,
     out,
   )

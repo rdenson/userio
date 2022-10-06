@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go_version: ["1.18", "1.17.8", "1.17.6"]
+        go_version: ["1.18.7", "1.19.1", "1.19.2"]
     steps:
       - uses: actions/checkout@v2
       - name: Setup Go

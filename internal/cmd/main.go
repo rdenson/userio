@@ -12,10 +12,12 @@ func main() {
   userio.WriteError(content)
   userio.WriteInstruction(content)
   userio.Writef(contentTemplate, "orange", 9)
-  userio.Writef(`
+  userio.Writef(`---
+---
     fox color:     %s
     bound height:  %d
 
+---
 `,
     "purple",
     9,
