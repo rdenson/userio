@@ -87,8 +87,6 @@ func (r *report) AddRowData(datapoints ...any) {
 		if currentDataValueLength > currentMaxWidth {
 			r.columns[columnIndex].maxWidth = currentDataValueLength
 		}
-
-		// fmt.Printf("max width for column %d: %d\n", columnIndex, r.columns[columnIndex].maxWidth)
 	}
 
 	r.rows[currRow] = append(r.rows[currRow], datapoints...)
@@ -116,61 +114,6 @@ func (r *report) GetRowFormatString() string {
 	return headerFormat.String()
 }
 
-// outputs a formatted report header
-//
-// Header includes: column names and a border underlining each
-// column name.
-func (r *report) PrintHeader() {
-	headerFmt := r.GetRowFormatString()
-	// headerElements := ((len(r.columns) - 1) * 2) + len(r.columns)
-	headerNames := make([]any, 0)
-	headerBorders := make([]any, 0)
-	for idx, column := range r.columns {
-		if idx < len(r.columns)-1 {
-			headerNames = append(headerNames, column.header)
-			headerBorders = append(headerBorders, strings.Repeat(headerBorder, len(column.header)))
-			headerNames = append(headerNames, column.maxWidth+r.settings.columnPadding-len(column.header))
-			headerBorders = append(headerBorders, column.maxWidth+r.settings.columnPadding-len(column.header))
-			headerNames = append(headerNames, columnSpace)
-			headerBorders = append(headerBorders, columnSpace)
-		} else {
-			// no need to handle column spacing for last column
-			headerNames = append(headerNames, column.header)
-			headerBorders = append(headerBorders, strings.Repeat(headerBorder, len(column.header)))
-		}
-	}
-
-	fmt.Println(">>> headerNames content")
-	fmt.Printf(">>> format: %q\n", headerFmt)
-	for i, v := range headerNames {
-		fmt.Printf(">>>   %d | {%v} (%T)\n", i, v, v)
-	}
-	fmt.Fprintf(r.settings.writer, headerFmt, headerNames...)
-	fmt.Fprintf(r.settings.writer, headerFmt, headerBorders...)
-}
-
-// output a formatted report body
-func (r *report) PrintBody() {
-	rowFmt := r.GetRowFormatString()
-	for _, row := range r.rows {
-		data := make([]any, 0)
-		for columnIdx, columnData := range row {
-			// need to convert columnData, type: any to a string... using fmt.Sprintf()
-			dataAsString := fmt.Sprintf("%v", columnData)
-			if columnIdx < len(r.columns)-1 {
-				data = append(data, columnData)
-				data = append(data, r.columns[columnIdx].maxWidth+r.settings.columnPadding-len(dataAsString))
-				data = append(data, columnSpace)
-			} else {
-				// no need to handle column spacing for last column
-				data = append(data, columnData)
-			}
-		}
-
-		fmt.Fprintf(r.settings.writer, rowFmt, data...)
-	}
-}
-
 // sets the max width (in spaces) for a column
 //
 // Columns are referenced by the header name. If headerName is not found,
@@ -192,6 +135,72 @@ func (r *report) SetColumnMaxWidth(headerName string, maxWidth int) error {
 	r.columns[r.columnIds[headerName]].maxWidth = maxWidth
 
 	return nil
+}
+
+// outputs the report: header and body (data)
+//
+// This is a convenience method for combining WriteHeader() and WriteBody.
+func (r *report) Write() {
+	r.WriteHeader()
+	r.WriteBody()
+}
+
+// outputs a formatted report header
+//
+// Header includes: column names and a border underlining each
+// column name.
+func (r *report) WriteHeader() {
+	headerFmt := r.GetRowFormatString()
+	// headerElements := ((len(r.columns) - 1) * 2) + len(r.columns)
+	headerNames := make([]any, 0)
+	headerBorders := make([]any, 0)
+	for idx, column := range r.columns {
+		if idx < len(r.columns)-1 {
+			headerNames = append(headerNames, column.header)
+			headerBorders = append(headerBorders, strings.Repeat(headerBorder, len(column.header)))
+			headerNames = append(headerNames, column.maxWidth+r.settings.columnPadding-len(column.header))
+			headerBorders = append(headerBorders, column.maxWidth+r.settings.columnPadding-len(column.header))
+			headerNames = append(headerNames, columnSpace)
+			headerBorders = append(headerBorders, columnSpace)
+		} else {
+			// no need to handle column spacing for last column
+			headerNames = append(headerNames, column.header)
+			headerBorders = append(headerBorders, strings.Repeat(headerBorder, len(column.header)))
+		}
+	}
+
+	if r.settings.debugEnabled {
+		fmt.Println(">>> headerNames content")
+		fmt.Printf(">>> format: %q\n", headerFmt)
+		for i, v := range headerNames {
+			fmt.Printf(">>>   %d | {%v} (%T)\n", i, v, v)
+		}
+	}
+
+	fmt.Fprintf(r.settings.writer, headerFmt, headerNames...)
+	fmt.Fprintf(r.settings.writer, headerFmt, headerBorders...)
+}
+
+// output a formatted report body
+func (r *report) WriteBody() {
+	rowFmt := r.GetRowFormatString()
+	for _, row := range r.rows {
+		data := make([]any, 0)
+		for columnIdx, columnData := range row {
+			// need to convert columnData, type: any to a string... using fmt.Sprintf()
+			dataAsString := fmt.Sprintf("%v", columnData)
+			if columnIdx < len(r.columns)-1 {
+				data = append(data, columnData)
+				data = append(data, r.columns[columnIdx].maxWidth+r.settings.columnPadding-len(dataAsString))
+				data = append(data, columnSpace)
+			} else {
+				// no need to handle column spacing for last column
+				data = append(data, columnData)
+			}
+		}
+
+		fmt.Fprintf(r.settings.writer, rowFmt, data...)
+	}
 }
 
 // initializes a new report

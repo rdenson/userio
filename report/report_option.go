@@ -15,6 +15,7 @@ type reportOption interface {
 type (
 	optionColumnPadding   int
 	optionDataPlaceholder string
+	optionDebugEnabled    bool
 	optionWriter          struct {
 		io.Writer
 	}
@@ -24,6 +25,7 @@ type (
 const (
 	OptTypeColumnPadding   string = "report.optionColumnPadding"
 	OptTypeDataPlaceholder string = "report.optionDataPlaceholder"
+	OptTypeDebugEnabled    string = "report.optionDebugEnabled"
 	OptTypeWriter          string = "report.optionWriter"
 )
 
@@ -33,6 +35,10 @@ func (cp optionColumnPadding) ApplyOption(rs *reportSettings) {
 
 func (dp optionDataPlaceholder) ApplyOption(rs *reportSettings) {
 	rs.dataPlaceholder = string(dp)
+}
+
+func (de optionDebugEnabled) ApplyOption(rs *reportSettings) {
+	rs.debugEnabled = bool(de)
 }
 
 func (w optionWriter) ApplyOption(rs *reportSettings) {
@@ -46,6 +52,13 @@ func ColumnPadding(n int) reportOption {
 	return optionColumnPadding(n)
 }
 
+// report option: enable debugging
+//
+// outputs extra data to stdout about the innerworking of report
+func EnableDebug() reportOption {
+	return optionDebugEnabled(true)
+}
+
 // report option: placeholder for absent data
 //
 // define the placeholder to display when data is absent
@@ -53,7 +66,7 @@ func Placeholder(dp string) reportOption {
 	return optionDataPlaceholder(dp)
 }
 
-// report option: how to output the report
+// report option: writer responsible for report output
 //
 // can define the "writer" for the report
 //

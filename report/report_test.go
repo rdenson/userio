@@ -213,7 +213,16 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 	}
 }
 
-func (rs *reportSuite) TestWritesToSpecifiedWriter() {
+// testing report structure (test is still in progress)
+//
+// test writes to a bytes.Buffer and examines bytes therein
+//
+// example output below:
+//
+//	line 0 (19 bytes): h0       h1      h2
+//	line 1 (19 bytes): --       --      --
+//	line 2 (23 bytes): hello    test    report
+func (rs *reportSuite) TestReportStructuredAsExpected() {
 	var reportLines [][]byte = make([][]byte, 1)
 	buf := new(bytes.Buffer)
 	rpt := NewReport(Writer(buf))
@@ -223,12 +232,9 @@ func (rs *reportSuite) TestWritesToSpecifiedWriter() {
 	// fill report
 	rpt.AddHeaders(expectedHeaders...)
 	rpt.AddRowData("hello", "test", "report")
-	// write report
-	rpt.PrintHeader()
-	rpt.PrintBody()
+	rpt.Write()
 
 	// inspection/testing below
-	// rs.T().Logf("%+v", buf.Bytes())
 	newlineCounter := 0
 	reportLines[0] = make([]byte, 0)
 	for bpos, b := range buf.Bytes() {
@@ -243,9 +249,6 @@ func (rs *reportSuite) TestWritesToSpecifiedWriter() {
 	}
 
 	rs.Equal(expectedReportLineCount, len(reportLines))
-	// for lineNumber, line := range reportLines {
-	// 	fmt.Printf("line %d (%2d bytes): %s\n", lineNumber, len(line), line)
-	// }
 
 	headerWords := regexp.MustCompile(`\w+`)
 	headerMatches := headerWords.FindAllString(string(reportLines[0]), -1)
@@ -262,9 +265,3 @@ func (rs *reportSuite) TestWritesToSpecifiedWriter() {
 	headerMatches = headerBorders.FindAllString(string(reportLines[1]), -1)
 	rs.Equal(len(expectedHeaders), len(headerMatches))
 }
-
-/*
-line 0 (19 bytes): h0       h1      h2
-line 1 (19 bytes): --       --      --
-line 2 (23 bytes): hello    test    report
-*/

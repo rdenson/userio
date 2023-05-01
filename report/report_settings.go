@@ -13,6 +13,7 @@ import (
 type reportSettings struct {
 	columnPadding         int
 	dataPlaceholder       string
+	debugEnabled          bool
 	writer                io.Writer
 	requestedOptionsState map[string]bool
 }
@@ -27,6 +28,7 @@ const (
 var defaulRequestedOptionsState map[string]bool = map[string]bool{
 	OptTypeColumnPadding:   false,
 	OptTypeDataPlaceholder: false,
+	OptTypeDebugEnabled:    false,
 	OptTypeWriter:          false,
 }
 
@@ -44,6 +46,7 @@ func (rs *reportSettings) processOptions(o ...reportOption) {
 	for optionType, requested := range rs.requestedOptionsState {
 		if !requested {
 			// set the default for that option
+			// bools defaulting to false will not be set here
 			switch optionType {
 			case OptTypeColumnPadding:
 				ColumnPadding(defaultColumnPadding).ApplyOption(rs)
