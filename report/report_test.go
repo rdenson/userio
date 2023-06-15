@@ -14,14 +14,14 @@ type reportTestCase struct {
 	expects     any
 	name        string
 	setupErr    error
-	setupReport func(testCase *reportTestCase) *report
+	setupReport func(testCase *reportTestCase) *Report
 }
 
 type reportSuite struct {
 	suite.Suite
 }
 
-func (rt *reportTestCase) setup() *report {
+func (rt *reportTestCase) setup() *Report {
 	return rt.setupReport(rt)
 }
 
@@ -34,7 +34,7 @@ func (rs *reportSuite) TestAddRowData() {
 		{
 			name:    "should add placeholders for missing data",
 			expects: []any{"apple", "-", "-"},
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				rpt := NewReport()
 
 				rpt.AddHeaders("h0", "h1", "h2")
@@ -46,7 +46,7 @@ func (rs *reportSuite) TestAddRowData() {
 		{
 			name:    "should truncate inputted datapoints if greater than the number of columns",
 			expects: []any{"apple", "orange", "pear"},
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				rpt := NewReport()
 
 				rpt.AddHeaders("h0", "h1", "h2")
@@ -70,7 +70,7 @@ func (rs *reportSuite) TestAddRowDataMaxColumnWidths() {
 		{
 			name:    "should equal data value widths",
 			expects: []int{5, 6, 9},
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				rpt := NewReport()
 
 				rpt.AddHeaders("h0", "h1", "h2")
@@ -82,7 +82,7 @@ func (rs *reportSuite) TestAddRowDataMaxColumnWidths() {
 		{
 			name:    "should equal greatest data value widths",
 			expects: []int{5, 13, 9},
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				rpt := NewReport()
 
 				rpt.AddHeaders("h0", "h1", "h2")
@@ -95,7 +95,7 @@ func (rs *reportSuite) TestAddRowDataMaxColumnWidths() {
 		{
 			name:    "can be overriden",
 			expects: []int{20, 13, 9},
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				rpt := NewReport()
 
 				rpt.AddHeaders("h0", "h1", "h2")
@@ -125,7 +125,7 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 		{
 			name:    "should set for known header",
 			expects: 17,
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				headerName := "h0"
 				rpt := NewReport()
 
@@ -141,7 +141,7 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 		{
 			name:      "should return error for unknown header",
 			expectErr: true,
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				badHeaderName := "doesNotExist"
 				headerName := "h0"
 				rpt := NewReport()
@@ -157,7 +157,7 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 			name:      "should return error for negative column width",
 			expectErr: true,
 			expects:   ErrNegagiveColumnWidth,
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				headerName := "h0"
 				rpt := NewReport()
 
@@ -170,7 +170,7 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 		{
 			name:    "should not be overridden if called before AddRowData and column data is less than the max width",
 			expects: 1000,
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				headerName := "h0"
 				rpt := NewReport()
 
@@ -183,7 +183,7 @@ func (rs *reportSuite) TestSetColumnMaxWidth() {
 		},
 		{
 			name: "should be overridden if called before AddRowData and column data is greater than the max width",
-			setupReport: func(tc *reportTestCase) *report {
+			setupReport: func(tc *reportTestCase) *Report {
 				headerName := "h0"
 				datapoint := "value"
 				rpt := NewReport()

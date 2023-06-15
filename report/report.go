@@ -18,7 +18,7 @@ type column struct {
 //
 // holds reporting metadata and stores options set when
 // initializing a report
-type report struct {
+type Report struct {
 	// column specification; id → index
 	columns []*column
 	// column hash of header names
@@ -42,7 +42,7 @@ var (
 // adds header names order by argument position
 //
 // Will append header names to a list of report columns.
-func (r *report) AddHeaders(headers ...string) {
+func (r *Report) AddHeaders(headers ...string) {
 	currColumnId := len(r.columns)
 	for _, header := range headers {
 		r.columns = append(r.columns, &column{header: header})
@@ -57,7 +57,7 @@ func (r *report) AddHeaders(headers ...string) {
 // function will append "data placeholders" if there are less datapoints
 // than the expected number of columns. If there more datapoints than
 // the expected number of columns, the set of datapoints will be truncated.
-func (r *report) AddRowData(datapoints ...any) {
+func (r *Report) AddRowData(datapoints ...any) {
 	r.rows = append(r.rows, make([]any, 0))
 	currRow := len(r.rows)
 	expectedDatapointsCount := len(r.columns)
@@ -99,7 +99,7 @@ func (r *report) AddRowData(datapoints ...any) {
 //
 //	%v%*s "inside row": data, flag for number of spaces, space
 //	%v    "outside row": data only
-func (r *report) GetRowFormatString() string {
+func (r *Report) GetRowFormatString() string {
 	headerFormat := new(strings.Builder)
 	for i := 0; i < len(r.columns); i++ {
 		if i != len(r.columns)-1 {
@@ -122,7 +122,7 @@ func (r *report) GetRowFormatString() string {
 // has been input can override the max width of a column. However, calling
 // this function before adding data can cause the max width value to be overriden
 // if a value encountered in report.AddRowData() exceeds the max width set here.
-func (r *report) SetColumnMaxWidth(headerName string, maxWidth int) error {
+func (r *Report) SetColumnMaxWidth(headerName string, maxWidth int) error {
 	_, known := r.columnIds[headerName]
 	if !known {
 		return fmt.Errorf(ErrUnknownHeader, headerName)
@@ -140,7 +140,7 @@ func (r *report) SetColumnMaxWidth(headerName string, maxWidth int) error {
 // outputs the report: header and body (data)
 //
 // This is a convenience method for combining WriteHeader() and WriteBody.
-func (r *report) Write() {
+func (r *Report) Write() {
 	r.WriteHeader()
 	r.WriteBody()
 }
@@ -149,7 +149,7 @@ func (r *report) Write() {
 //
 // Header includes: column names and a border underlining each
 // column name.
-func (r *report) WriteHeader() {
+func (r *Report) WriteHeader() {
 	headerFmt := r.GetRowFormatString()
 	// headerElements := ((len(r.columns) - 1) * 2) + len(r.columns)
 	headerNames := make([]any, 0)
@@ -182,7 +182,7 @@ func (r *report) WriteHeader() {
 }
 
 // output a formatted report body
-func (r *report) WriteBody() {
+func (r *Report) WriteBody() {
 	rowFmt := r.GetRowFormatString()
 	for _, row := range r.rows {
 		data := make([]any, 0)
@@ -206,8 +206,8 @@ func (r *report) WriteBody() {
 // initializes a new report
 //
 // Defaults will be used if options are not passed.
-func NewReport(options ...reportOption) *report {
-	r := &report{
+func NewReport(options ...reportOption) *Report {
+	r := &Report{
 		columns:   make([]*column, 0),
 		columnIds: make(map[string]int),
 		rows:      make([][]any, 0),
