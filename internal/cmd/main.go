@@ -1,16 +1,16 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"os"
 
 	"github.com/rdenson/userio"
 	"github.com/rdenson/userio/report"
 )
 
 func main() {
-	content := "the quick brown fox jumps over the lazy dog"
-	contentTemplate := "the quick %s fox jumps %d meter(s)\n"
-
+	// report example
 	rpt := report.NewReport()
 	rpt.AddHeaders("username", "spec id", "counter", "age")
 	// rpt.SetColumnMaxWidth("username", 15)
@@ -23,25 +23,35 @@ func main() {
 	rpt.Write()
 	fmt.Println()
 
-	userio.Write(content)
-	userio.WriteInfo(content)
-	userio.WriteError(content)
-	userio.WriteInstruction(content)
-	userio.Writef(contentTemplate, "orange", 9)
-	userio.WriteData("hello %s, good %s to you", "bob", "afternoon")
-	userio.Writef(`---
----
-    fox color:     %s
-    bound height:  %d
+	// standard text configurations examples
+	content := "the quick brown fox jumps over the lazy dog"
+	contentTemplate := "the quick %s fox jumps %d meter(s)\n"
+	userio.Writeln(content)
+	userio.Write(contentTemplate, "orange", 9)
+	userio.WriteError(errors.New("this is an error"))
+	userio.Highlight("super %s information", "important")
 
+	// custom text configuration examples
+	customSpec := &userio.DisplaySpec{
+		Dest:          os.Stdout,
+		TerminateLine: true,
+		TextColor:     userio.ColorGreen,
+		ValuesColor:   userio.ColorMuted,
+	}
+	customSpec.Write("hello %s, your total is: %.2f", "tom", 324892.03)
+	customSpec2 := &userio.DisplaySpec{
+		TextColor:   userio.ColorCyan,
+		ValuesColor: userio.ColorMagenta,
+	}
+	customSpec2.Write(`---
+	---
+	    fox color:     %s
+	    bound height:  %d
+
+	---
 ---
 `,
 		"purple",
 		9,
 	)
-	userio.Writef(contentTemplate, userio.Highlight("yellow"), 9)
-
-	userio.ListElement(content)
-	userio.ListElementFromArray(6, content)
-	userio.ListElementWithLabel("label", content)
 }

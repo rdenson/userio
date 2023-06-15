@@ -2,11 +2,14 @@ package userio
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
 )
+
+var ErrBadInput error = errors.New("input not recognized, please enter a number")
 
 // Optimistic boolean parser. A positive response from stdin yields true o/w false.
 func PromptForBool(content string) bool {
@@ -36,7 +39,7 @@ func PromptForChoice(content string) int {
 	for continueToPrompt {
 		parsedInput, conversionErr := strconv.Atoi(promptToken(content, os.Stdin, os.Stdout))
 		if conversionErr != nil {
-			WriteError("input not recognized, please enter a number")
+			WriteError(ErrBadInput)
 		} else {
 			choice = parsedInput - 1
 			continueToPrompt = false
@@ -57,7 +60,7 @@ func promptLine(content string, in, out *os.File) (string, error) {
 	const Newline = '\n'
 	var inputReader *bufio.Reader = bufio.NewReader(in)
 
-	output(ColorStandard, content+" ", standardPadding, !writeNewline, out)
+	Write(content + " ")
 	inputRead, inputReadErr := inputReader.ReadString(Newline)
 	if inputReadErr != nil {
 		return "", inputReadErr
@@ -73,9 +76,9 @@ func promptLine(content string, in, out *os.File) (string, error) {
 // has no tokens (only EOF), an empty string is returned.
 func promptToken(content string, in, out *os.File) string {
 	var userInput string
-	output(ColorStandard, content+" ", standardPadding, !writeNewline, out)
-	tokensScanned, scanErr := fmt.Fscanln(in, &userInput)
 
+	Write(content + " ")
+	tokensScanned, scanErr := fmt.Fscanln(in, &userInput)
 	// if we've received an error here, it's most likely because "in" did not process
 	// the exact amount of values we anticipated
 	if scanErr != nil {
